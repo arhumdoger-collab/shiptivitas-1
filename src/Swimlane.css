@@ -2,11 +2,29 @@
   text-align: left;
   font-weight: bold;
   font-size: 18px;
+  margin-bottom: 12px;
+  padding-left: 8px;
+  color: #333;
 }
 
 .Swimlane-dragColumn {
-  height: calc(100vh - 100px);
-  overflow-y: auto;
+  height: calc(100vh - 140px);         /* screen ke hisab se height adjust (title aur padding ke liye minus) */
+  overflow-y: auto;                    /* scroll agar bohot cards hon */
   background-color: #f5f5f5;
   padding: 16px 8px;
+  border-radius: 6px;
+  min-height: 400px;                   /* minimum taake khali bhi acha dikhe */
+}
+
+/* Optional: column title ke liye extra style */
+.Swimlane-title.backlog::before {
+  content: "📋 ";
+}
+
+.Swimlane-title.in-progress::before {
+  content: "🔄 ";
+}
+
+.Swimlane-title.complete::before {
+  content: "✅ ";
 }

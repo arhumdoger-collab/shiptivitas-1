@@ -14,13 +14,14 @@ export default class Board extends React.Component {
         inProgress: clients.filter(client => client.status && client.status === 'in-progress'),
         complete: clients.filter(client => client.status && client.status === 'complete'),
       }
-    }
+    };
     this.swimlanes = {
       backlog: React.createRef(),
       inProgress: React.createRef(),
       complete: React.createRef(),
-    }
+    };
   }
+
   getClients() {
     return [
       ['1','Stark, White and Abbott','Cloned Optimal Architecture', 'in-progress'],
@@ -47,12 +48,75 @@ export default class Board extends React.Component {
       id: companyDetails[0],
       name: companyDetails[1],
       description: companyDetails[2],
-      status: companyDetails[3],
+      status: companyDetails[3] || 'backlog',
     }));
   }
-  renderSwimlane(name, clients, ref) {
+
+  componentDidMount() {
+    const containers = [
+      this.swimlanes.backlog.current,
+      this.swimlanes.inProgress.current,
+      this.swimlanes.complete.current
+    ].filter(c => c);
+
+    if (containers.length < 3) return;
+
+    this.drake = Dragula(containers, {
+      moves: (el) => el && el.classList.contains('Card'),
+      removeOnSpill: false,      // Spill pe remove mat karo
+      revertOnSpill: true        // Spill pe wapas original jagah jaaye
+    });
+
+    // Drop handler - DOM change mat karo, sirf state update karo
+    this.drake.on('drop', (el, target, source, sibling) => {
+      if (!target) return;
+
+      // Target container se new status lo
+      const swimlaneDiv = target.closest('.Swimlane-column') || target;
+      const newStatus = swimlaneDiv.getAttribute('data-status');
+
+      const clientId = el.getAttribute('data-id');
+
+      if (!clientId || !newStatus) return;
+
+      // DOM move ko rok do (Dragula ko cancel karo)
+      // el ko source mein wapas daalo temporarily (React ke liye safe)
+      if (source && source !== target) {
+        source.appendChild(el);
+      }
+
+      // Ab React state update se DOM re-render hoga (no conflict)
+      this.setState(prevState => {
+        const allClients = [
+          ...prevState.clients.backlog,
+          ...prevState.clients.inProgress,
+          ...prevState.clients.complete
+        ];
+
+        const updated = allClients.map(client => 
+          client.id === clientId ? { ...client, status: newStatus } : client
+        );
+
+        return {
+          clients: {
+            backlog: updated.filter(c => c.status === 'backlog' || !c.status),
+            inProgress: updated.filter(c => c.status === 'in-progress'),
+            complete: updated.filter(c => c.status === 'complete'),
+          }
+        };
+      });
+    });
+  }
+
+  componentWillUnmount() {
+    if (this.drake) {
+      this.drake.destroy();
+    }
+  }
+
+  renderSwimlane(name, clients, ref, status) {
     return (
-      <Swimlane name={name} clients={clients} dragulaRef={ref}/>
+      <Swimlane name={name} clients={clients} dragulaRef={ref} status={status} />
     );
   }
 
@@ -61,13 +125,16 @@ export default class Board extends React.Component {
       <div className="Board">
         <div className="container-fluid">
           <div className="row">
-            <div className="col-md-4">
+            {/* Backlog */}
+            <div className="col-md-4 Swimlane-column" data-status="backlog">
               {this.renderSwimlane('Backlog', this.state.clients.backlog, this.swimlanes.backlog)}
             </div>
-            <div className="col-md-4">
+            {/* In Progress */}
+            <div className="col-md-4 Swimlane-column" data-status="in-progress">
               {this.renderSwimlane('In Progress', this.state.clients.inProgress, this.swimlanes.inProgress)}
             </div>
-            <div className="col-md-4">
+            {/* Complete */}
+            <div className="col-md-4 Swimlane-column" data-status="complete">
               {this.renderSwimlane('Complete', this.state.clients.complete, this.swimlanes.complete)}
             </div>
           </div>

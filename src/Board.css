@@ -1,3 +1,47 @@
 .Board {
   margin-top: 12px;
+  padding: 0 20px;
+}
+
+.Swimlane-column {
+  background-color: #f8f9fa;           /* light background for column */
+  border: 1px solid #dee2e6;           /* border around each column */
+  border-radius: 8px;
+  padding: 12px;
+  min-height: 500px;                   /* minimum height taake khali column bhi dikhe */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.col-md-4 {
+  padding: 0 10px;                     /* columns ke beech space */
+}
+
+/* Yeh classes Card.js mein use hongi – status ke hisab se color */
+.Card.backlog {
+  background-color: #e9ecef;           /* light grey for backlog */
+  border-left: 5px solid #6c757d;      /* dark grey line left side */
+}
+
+.Card.in-progress {
+  background-color: #d1e7ff;           /* light blue for in-progress */
+  border-left: 5px solid #0d6efd;      /* blue line */
+}
+
+.Card.complete {
+  background-color: #d4edda;           /* light green for complete */
+  border-left: 5px solid #198754;      /* green line */
+}
+
+/* Common card style (Card.js mein class 'Card' hai) */
+.Card {
+  margin-bottom: 12px;
+  padding: 12px;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  cursor: grab;                        /* drag karte waqt hand cursor */
+  transition: all 0.2s ease;           /* smooth movement */
+}
+
+.Card:active {
+  cursor: grabbing;                    /* jab utha ho to grabbing cursor */
 }
