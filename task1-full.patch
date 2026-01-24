@@ -1,0 +1,25 @@
+Task 1 - Shiptivitas Frontend (Manual Patch Description by Arham)
+
+Changes made:
+1. Board.js:
+   - Added Dragula import and initialization in componentDidMount
+   - Added drop handler to update client status on drag-drop
+   - Added data-status attribute to Swimlane-column divs
+   - Updated state filtering for backlog, inProgress, complete
+
+2. Swimlane.js:
+   - Passed status prop from Board
+   - Added data-status to Swimlane-column
+
+3. Card.js:
+   - Added className with status for color change (backlog, in-progress, complete)
+   - Added data-id attribute for Dragula
+
+4. CSS (Board.css / Swimlane.css / Card.css):
+   - Defined colors for .Card.backlog (grey), .Card.in-progress (blue), .Card.complete (green)
+   - Added card styles (padding, shadow, cursor: grab)
+
+Repo: https://github.com/arhumdoger-collab/shiptivitas-1
+
+Tested: Drag-drop works, reorder within lane, move between lanes, colors change correctly.
+Frontend only, no backend.
